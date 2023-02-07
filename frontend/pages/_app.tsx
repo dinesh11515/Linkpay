@@ -1,35 +1,26 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
-import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum } from "wagmi/chains";
-import { alchemyProvider } from "wagmi/providers/alchemy";
-import { publicProvider } from "wagmi/providers/public";
+import { AuthProvider, CHAIN } from "@arcana/auth";
+import { ProvideAuth } from "@arcana/auth-react";
 
-const { chains, provider } = configureChains(
-  [mainnet, polygon, optimism, arbitrum],
-  [publicProvider()]
+const arcanaProvider = new AuthProvider(
+  "56639397ce14b62124c30a0679cc4642b1486386",
+  {
+    position: "left", // defaults to right
+    theme: "light", // defaults to dark
+    alwaysVisible: true, // defaults to true which is Full UI mode
+    chainConfig: {
+      chainId: "0x1",
+      rpcUrl: "https://rpc.testnet.mantle.xyz	",
+    },
+  }
 );
-
-const { connectors } = getDefaultWallets({
-  appName: "My RainbowKit App",
-  chains,
-});
-
-const wagmiClient = createClient({
-  autoConnect: true,
-  connectors,
-  provider,
-});
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains}>
-        <Component {...pageProps} />;
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <ProvideAuth provider={arcanaProvider}>
+      <Component {...pageProps} />
+    </ProvideAuth>
   );
 }

@@ -3,8 +3,14 @@ import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { Auth, useAuth } from "@arcana/auth-react";
 
 export default function Home() {
+  const auth = useAuth();
+  const onLogin = async () => {
+    // Route to authenticated page
+    await auth.connect();
+  };
   return (
     <>
       <Head>
@@ -13,9 +19,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="flex flex-row-reverse">
-        <ConnectButton />
-      </div>
+      <main>
+        <button className="p-2 bg-red-300 rounded-xl m-2" onClick={onLogin}>
+          Arcana login
+        </button>
+      </main>
     </>
   );
 }
