@@ -2,7 +2,6 @@ import Head from "next/head";
 import Image from "next/image";
 import { Inter } from "@next/font/google";
 import styles from "@/styles/Home.module.css";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Auth, useAuth } from "@arcana/auth-react";
 
 export default function Home() {
@@ -14,31 +13,7 @@ export default function Home() {
     try {
       await auth.connect();
       console.log(provider, "provider");
-      const chainId = 1;
-      console.log(chainId, "chainId");
-      await provider.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0x5001" }],
-      });
     } catch (e) {
-      if (e.code === 4902) {
-        await provider.request({
-          method: "wallet_addEthereumChain",
-          params: [
-            {
-              chainId: "0x5001",
-              chainName: "Mantle Testnet",
-              rpcUrls: ["https://rpc.testnet.mantle.xyz	"],
-              nativeCurrency: {
-                name: "Mantle",
-                symbol: "BIT",
-                decimals: 18,
-              },
-              blockExplorerUrls: ["https://explorer.testnet.mantle.xyz/"],
-            },
-          ],
-        });
-      }
       console.log(e, "onLogin");
     }
   };
