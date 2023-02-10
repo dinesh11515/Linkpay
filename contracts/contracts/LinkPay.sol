@@ -84,6 +84,14 @@ contract LinkPay {
         return users[addressToUsername[_address]];
     }
 
+    // before calling this function, the user must approve the contract to spend the tokens
+    // ERC20.approve(address spender, uint256 amount)
+    // pay to user
+    // _username: username of the user to pay
+    // _amount: amount to pay
+    // tokenAddress: address of the token to pay
+    // _tokenName: name of the token to pay
+
     function payToUser(
         string memory _username,
         uint256 _amount,
