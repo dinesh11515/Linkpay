@@ -2,12 +2,42 @@ import Image from "next/image";
 import React from "react";
 import { HiCheckBadge } from "react-icons/hi2";
 import { BsGithub, BsTwitter, BsCalendarCheck, BsUpload } from "react-icons/bs";
+import { CiStreamOn } from "react-icons/ci";
 import usdc from "../public/usdc.png";
 import usdt from "../public/t.png";
 import dai from "../public/dai.png";
 import matic from "../public/matic.png";
+import Button from "@/components/UI/Button";
 
 const Pay = () => {
+  const usdcHandler = () => {
+    console.log("Pay via usdc");
+  };
+
+  const usdtHandler = () => {
+    console.log("Pay via usdt");
+  };
+
+  const maticHandler = () => {
+    console.log("Pay via matic");
+  };
+
+  const daiHandler = () => {
+    console.log("Pay via dai");
+  };
+
+  const scheduleHandler = () => {
+    console.log("Schedule popup");
+  };
+
+  const requestHandler = () => {
+    console.log("Request popup");
+  };
+
+  const streamHandler = () => {
+    console.log("Stream popup");
+  };
+
   return (
     <section>
       <header className="relative w-[100vw] h-[32vh] ">
@@ -34,7 +64,10 @@ const Pay = () => {
                 </span>
               </h2>
               <div className="flex gap-5">
-                <button className="border border-black  rounded-xl px-6 py-2 hover:border-[#1B0B22] hover:text-[#1B0B22] hover:bg-black/10">
+                <button
+                  onClick={scheduleHandler}
+                  className="border border-black  rounded-xl px-6 py-2 hover:border-[#1B0B22] hover:text-[#1B0B22] hover:bg-black/10"
+                >
                   <p className="flex gap-2 items-center  font-semibold">
                     Schedule{" "}
                     <span>
@@ -42,11 +75,26 @@ const Pay = () => {
                     </span>
                   </p>
                 </button>
-                <button className="border border-black  rounded-xl px-6 py-2 hover:border-[#1B0B22] hover:text-[#1B0B22] hover:bg-black/10">
+                <button
+                  onClick={requestHandler}
+                  className="border border-black  rounded-xl px-6 py-2 hover:border-[#1B0B22] hover:text-[#1B0B22] hover:bg-black/10"
+                >
                   <p className="flex gap-2 items-center  font-semibold">
                     Request{" "}
                     <span>
                       <BsUpload />
+                    </span>
+                  </p>
+                </button>
+
+                <button
+                  onClick={streamHandler}
+                  className="border border-black  rounded-xl px-6 py-2 hover:border-[#1B0B22] hover:text-[#1B0B22] hover:bg-black/10"
+                >
+                  <p className="flex gap-2 items-center  font-semibold">
+                    Stream{" "}
+                    <span>
+                      <CiStreamOn />
                     </span>
                   </p>
                 </button>
@@ -63,10 +111,13 @@ const Pay = () => {
       </div>
 
       <div className="w-[75%] mx-auto mt-16 max-w-[1200px]">
-        <p className="text-xl mb-5 font-semibold text-gray-600">Initiate Payment</p>
+        <p className="text-xl mb-5 font-semibold text-gray-600">
+          Initiate Payment
+        </p>
 
         <div className="flex gap-20">
           <button
+            onClick={usdcHandler}
             className={`rounded-xl w-[220px] pl-5 py-3 items-center bg-blue-100 flex gap-2 hover:bg-blue-200`}
           >
             <Image
@@ -82,6 +133,7 @@ const Pay = () => {
           </button>
 
           <button
+            onClick={usdtHandler}
             className={`rounded-xl w-[220px] pl-5 py-3 items-center bg-green-100 flex gap-2 hover:bg-green-200`}
           >
             <Image
@@ -97,6 +149,7 @@ const Pay = () => {
           </button>
 
           <button
+            onClick={daiHandler}
             className={`rounded-xl w-[220px] pl-5 py-3 items-center bg-yellow-100 flex gap-2 hover:bg-yellow-200`}
           >
             <Image
@@ -113,9 +166,8 @@ const Pay = () => {
         </div>
 
         <div className="flex gap-20 mt-10">
-          
-
           <button
+            onClick={maticHandler}
             className={`rounded-xl w-[220px] pl-5 py-3 items-center bg-purple-200 flex gap-2 hover:bg-purple-300`}
           >
             <Image

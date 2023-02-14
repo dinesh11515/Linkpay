@@ -1,27 +1,14 @@
 import Image from "next/image";
-import React from "react";
+import React, { ComponentType } from "react";
+import { IconType } from "react-icons/lib/esm/iconBase";
 
-type Prop = {
-  //   bgHover: string;
-  clr: string;
-  //   textClr: string;
-  imgUrl: string;
-  tokenName: string;
-};
-
-const Button = ({ clr, imgUrl, tokenName }: Prop) => {
+const Button = ({ icon, title }: { icon: Element; title: string }) => {
   return (
-    <button
-      className={`rounded-xl w-[180px] pl-5 py-2 items-center bg-${clr}-100 flex gap-2 hover:bg-${clr}-200`}
-    >
-      <Image
-        src={imgUrl}
-        alt={tokenName}
-        width={30}
-        height={30}
-        className="rounded-full"
-      />
-      <p className={`font-semibold text-${clr}-600 text-lg`}>{tokenName}</p>
+    <button className="border border-black  rounded-xl px-6 py-2 hover:border-[#1B0B22] hover:text-[#1B0B22] hover:bg-black/10">
+      <div className="flex gap-2 items-center  ">
+        <p className="font-semibold">{title}</p>
+        <>{icon}</>
+      </div>
     </button>
   );
 };
