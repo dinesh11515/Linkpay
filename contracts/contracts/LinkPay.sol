@@ -122,4 +122,12 @@ contract LinkPay {
             _amount * (10**token.decimals())
         );
     }
+
+    function getTokensByUser(string memory _username)
+        public
+        view
+        returns (tokenDetails[] memory)
+    {
+        return acceptableTokens[_username];
+    }
 }

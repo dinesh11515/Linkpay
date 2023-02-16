@@ -1,4 +1,4 @@
-export const contractAddress = "0xe0f388c6d7ce0540ffb7c5e5ff2b444e64eb2fcd";
+export const contractAddress = "0x367B56C44A598B27f9083EC1DbEfe1B3ea42C377";
 export const contractABI = [
   {
     inputs: [
@@ -205,6 +205,37 @@ export const contractABI = [
         internalType: "struct LinkPay.User",
         name: "",
         type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "_username",
+        type: "string",
+      },
+    ],
+    name: "getTokensByUser",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "tokenAddress",
+            type: "address",
+          },
+          {
+            internalType: "string",
+            name: "tokenName",
+            type: "string",
+          },
+        ],
+        internalType: "struct LinkPay.tokenDetails[]",
+        name: "",
+        type: "tuple[]",
       },
     ],
     stateMutability: "view",

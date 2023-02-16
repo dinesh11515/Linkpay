@@ -1,10 +1,9 @@
-import { ethers } from "hardhat";
+import { ethers, accounts } from "hardhat";
 
 async function main() {
   // We get the contract to deploy
-  const signer = await ethers.getSigners();
-  console.log("signer", signer[0].address);
-  const LinkPay = await ethers.getContractFactory("LinkPay");
+  const signer = await accounts.getSigners();
+  const LinkPay = await ethers.getContractFactory("LinkPay", signer[0]);
   const linkPay = await LinkPay.deploy();
 
   await linkPay.deployed();
