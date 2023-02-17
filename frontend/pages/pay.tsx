@@ -20,6 +20,7 @@ import {
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useStyleRegistry } from "styled-jsx";
+import StreamModal from "@/components/Modal/StreamModal";
 
 interface IUser {
   name: string;
@@ -34,6 +35,7 @@ const Pay = () => {
   const [user, setUser] = useState<IUser>();
   const [tokenDetails, setTokenDetails] = useState<any>(null);
   const [signer, setSigner] = useState<any>();
+  const [showStreamModal, setShowStreamModal] = useState(false);
 
   const router = useRouter();
   const userName = "dineshaitham";
@@ -99,7 +101,11 @@ const Pay = () => {
   };
 
   const streamHandler = () => {
-    console.log("Stream popup");
+    setShowStreamModal(true);
+  };
+
+  const closeStreamHandler = () => {
+    setShowStreamModal(false);
   };
 
   //get token details by user name
@@ -135,10 +141,10 @@ const Pay = () => {
         <p>Loading...</p>
       ) : (
         <section>
-          <button onClick={connectWallet}>Connect Wallet</button>
-          <header className="relative w-[100vw] h-[32vh] ">
-            {/* <Image src="/header.png" alt="header img" fill={true} /> */}
-            <div className="w-full h-full bg-gradient-to-r from-[#000000] via-[#1B0B22] to-[#1C1A28] " />
+          {/* <button onClick={connectWallet}>Connect Wallet</button> */}
+          <header className="relative  h-[45vh] ">
+            <Image src="/head.png" alt="header img" fill />
+            {/* <div className="w-full h-full bg-gradient-to-r from-[#000000] via-[#1B0B22] to-[#1C1A28] " /> */}
           </header>
           <div className="w-[80%] max-w-[1200px] mx-auto ">
             <div className="flex">
@@ -240,6 +246,7 @@ const Pay = () => {
                 );
               })}
           </div>
+          {showStreamModal && <StreamModal onClose={closeStreamHandler} />}
         </section>
       )}
     </div>
