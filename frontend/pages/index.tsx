@@ -1,5 +1,5 @@
 import { Auth, useAuth } from "@arcana/auth-react";
-import Pay from "./[pay]";
+import Pay from "./pay";
 
 export default function Home() {
   const auth = useAuth();

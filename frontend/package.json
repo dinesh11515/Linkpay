@@ -13,6 +13,7 @@
     "@arcana/auth-react": "^0.0.2",
     "@next/font": "13.1.6",
     "@pushprotocol/restapi": "^0.4.0",
+    "@superfluid-finance/sdk-core": "^0.6.1",
     "@types/node": "18.11.19",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
@@ -23,6 +24,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.7.1",
+    "react-ipfs-image": "^0.7.0",
     "typescript": "4.9.5"
   },
   "devDependencies": {

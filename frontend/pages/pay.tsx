@@ -8,9 +8,18 @@ import usdt from "../public/t.png";
 import dai from "../public/dai.png";
 import matic from "../public/matic.png";
 import Button from "@/components/UI/Button";
-import { ethers } from "ethers";
-import { contractABI, contractAddress } from "@/constants";
+import { ethers, Signer } from "ethers";
+import {
+  contractABI,
+  mantleAddress,
+  mumbaiAddress,
+  mantleRPC,
+  mumbaiRPC,
+  erc20abi,
+} from "@/constants";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import { useStyleRegistry } from "styled-jsx";
 
 interface IUser {
   name: string;
@@ -24,23 +33,63 @@ const Pay = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<IUser>();
   const [tokenDetails, setTokenDetails] = useState<any>(null);
+  const [signer, setSigner] = useState<any>();
 
-  const usdcHandler = () => {
-    console.log("Pay via usdc");
+  const router = useRouter();
+  const userName = "dineshaitham";
+  const chain = "mumbai";
+
+  const connectWallet = async () => {
+    try {
+      const provider = new ethers.providers.Web3Provider(
+        (window as any).ethereum
+      );
+
+      // MetaMask requires requesting permission to connect users accounts
+      await provider.send("eth_requestAccounts", []);
+
+      // The MetaMask plugin also allows signing transactions to
+      // send ether and pay to change state within the blockchain.
+      // For this, you need the account signer...
+      const signer = provider.getSigner();
+      setSigner(signer);
+    } catch (err) {
+      console.log(err, "connect Wallet");
+    }
   };
 
-  const usdtHandler = () => {
-    console.log("Pay via usdt");
-  };
+  const payHandler = async (
+    tokenName: string,
+    tokenAddress: string,
+    amount: string
+  ) => {
+    try {
+      const erc20Contract = new ethers.Contract(tokenAddress, erc20abi, signer);
 
-  const maticHandler = () => {
-    console.log("Pay via matic");
-  };
+      const decimals = erc20Contract.decimals();
 
-  const daiHandler = () => {
-    console.log("Pay via dai");
-  };
+      await erc20Contract.approve(
+        chain === "mumbai" ? mumbaiAddress : mantleAddress,
+        ethers.utils.parseUnits(amount, decimals)
+      );
 
+      const contract = new ethers.Contract(
+        chain === "mumbai" ? mumbaiAddress : mantleAddress,
+        contractABI,
+        signer
+      );
+
+      const tx = await contract.payToUser(
+        userName,
+        ethers.utils.parseUnits(amount, decimals),
+        tokenAddress,
+        tokenName
+      );
+      await tx.wait();
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const scheduleHandler = () => {
     console.log("Schedule popup");
   };
@@ -57,10 +106,10 @@ const Pay = () => {
   const getDetails = async (name: string) => {
     try {
       const provider = new ethers.providers.JsonRpcProvider(
-        "https://rpc.ankr.com/polygon_mumbai"
+        chain === "mumbai" ? mumbaiRPC : mantleRPC
       );
       const contract = new ethers.Contract(
-        contractAddress,
+        chain === "mumbai" ? mumbaiAddress : mantleAddress,
         contractABI,
         provider
       );
@@ -75,7 +124,7 @@ const Pay = () => {
   };
 
   useEffect(() => {
-    getDetails("dineshaitham");
+    getDetails(userName as string);
   }, []);
 
   console.log(tokenDetails);
@@ -86,6 +135,7 @@ const Pay = () => {
         <p>Loading...</p>
       ) : (
         <section>
+          <button onClick={connectWallet}>Connect Wallet</button>
           <header className="relative w-[100vw] h-[32vh] ">
             {/* <Image src="/header.png" alt="header img" fill={true} /> */}
             <div className="w-full h-full bg-gradient-to-r from-[#000000] via-[#1B0B22] to-[#1C1A28] " />
@@ -168,14 +218,17 @@ const Pay = () => {
 
             {tokenDetails?.length > 0 &&
               tokenDetails.map((token: any) => {
+                const img = "/" + token.tokenName + ".png";
                 return (
                   <button
-                    onClick={usdcHandler}
+                    onClick={() =>
+                      payHandler(token.tokenName, token.tokenAddress, "0.1")
+                    }
                     className={`rounded-xl w-[220px] pl-5 py-3 items-center bg-blue-100 flex gap-2 hover:bg-blue-200`}
                   >
                     <Image
-                      src={usdc}
-                      alt="USDC"
+                      src={img}
+                      alt={token.tokenName}
                       width={30}
                       height={30}
                       className="rounded-full"
@@ -186,24 +239,6 @@ const Pay = () => {
                   </button>
                 );
               })}
-
-            <div className="flex gap-20 mt-10">
-              <button
-                onClick={maticHandler}
-                className={`rounded-xl w-[220px] pl-5 py-3 items-center bg-purple-200 flex gap-2 hover:bg-purple-300`}
-              >
-                <Image
-                  src={matic}
-                  alt="Matic"
-                  width={40}
-                  height={30}
-                  className="rounded-full"
-                />
-                <p className={`font-semibold text-purple-700 text-lg`}>
-                  Pay with Matic
-                </p>
-              </button>
-            </div>
           </div>
         </section>
       )}
