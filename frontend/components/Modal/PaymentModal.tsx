@@ -2,7 +2,13 @@ import Image from "next/image";
 import React, { useState } from "react";
 import Backdrop from "../UI/Backdrop";
 
-const PaymentModal = ({ onClose }: any) => {
+const PaymentModal = ({
+  onClose,
+  payHandler,
+  tokenAddress,
+  tokenName,
+  userName,
+}: any) => {
   const [amount, setAmount] = useState("");
 
   const paymentHandler = (e: any) => {
@@ -32,6 +38,7 @@ const PaymentModal = ({ onClose }: any) => {
           <button
             type="submit"
             className="font-Poppins uppercase font-semibold w-full bg-[#45d4bf] text-white hover:bg-[#34a796] rounded-md my-3 py-3"
+            onClick={() => payHandler(tokenName, tokenAddress, amount)}
           >
             Pay
           </button>

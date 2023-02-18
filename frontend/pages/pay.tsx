@@ -38,6 +38,10 @@ const Pay = () => {
   const [signer, setSigner] = useState<any>();
   const [showStreamModal, setShowStreamModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [tokenAddress, setTokenAddress] = useState("");
+  const [tokenName, setTokenName] = useState("");
+
+  console.log(tokenAddress, tokenName);
 
   const router = useRouter();
   const userName = "dineshaitham";
@@ -69,13 +73,24 @@ const Pay = () => {
   ) => {
     try {
       const erc20Contract = new ethers.Contract(tokenAddress, erc20abi, signer);
+      console.log(erc20Contract);
 
-      const decimals = erc20Contract.decimals();
+      const decimals = await erc20Contract.decimals();
+      console.log(decimals);
 
-      await erc20Contract.approve(
+      console.log(ethers.utils.parseUnits(amount, decimals));
+
+      let tx = await erc20Contract.approve(
         chain === "mumbai" ? mumbaiAddress : mantleAddress,
         ethers.utils.parseUnits(amount, decimals)
       );
+      await tx.wait();
+
+      const allowance = await erc20Contract.allowance(
+        await signer.getAddress(),
+        chain === "mumbai" ? mumbaiAddress : mantleAddress
+      );
+      console.log(allowance.toString());
 
       const contract = new ethers.Contract(
         chain === "mumbai" ? mumbaiAddress : mantleAddress,
@@ -83,9 +98,9 @@ const Pay = () => {
         signer
       );
 
-      const tx = await contract.payToUser(
+      tx = await contract.payToUser(
         userName,
-        ethers.utils.parseUnits(amount, decimals),
+        Number(amount),
         tokenAddress,
         tokenName
       );
@@ -98,7 +113,12 @@ const Pay = () => {
     console.log("Schedule popup");
   };
 
-  const requestHandler = () => {
+  const requestHandler = (address: string, name: string) => {
+    setShowPaymentModal(true);
+    setTokenAddress(address);
+    setTokenName(name);
+  };
+  const requestingHandler = () => {
     setShowPaymentModal(true);
   };
 
@@ -143,7 +163,7 @@ const Pay = () => {
         <p>Loading...</p>
       ) : (
         <section>
-          {/* <button onClick={connectWallet}>Connect Wallet</button> */}
+          <button onClick={connectWallet}>Connect Wallet</button>
           <header className="relative  h-[45vh] ">
             <Image src="/head.png" alt="header img" fill />
             {/* <div className="w-full h-full bg-gradient-to-r from-[#000000] via-[#1B0B22] to-[#1C1A28] " /> */}
@@ -180,7 +200,7 @@ const Pay = () => {
                       </p>
                     </button>
                     <button
-                      onClick={requestHandler}
+                      onClick={requestingHandler}
                       className="border border-black  rounded-xl px-6 py-2 hover:border-[#1B0B22] hover:text-[#1B0B22] hover:bg-black/10"
                     >
                       <p className="flex gap-2 items-center  font-semibold">
@@ -230,7 +250,7 @@ const Pay = () => {
                 return (
                   <button
                     onClick={() =>
-                      payHandler(token.tokenName, token.tokenAddress, "0.1")
+                      requestHandler(token.tokenAddress, token.tokenName)
                     }
                     className={`rounded-xl w-[220px] pl-5 py-3 items-center bg-blue-100 flex gap-2 hover:bg-blue-200`}
                   >
@@ -254,6 +274,10 @@ const Pay = () => {
               onClose={() => {
                 setShowPaymentModal(false);
               }}
+              payHandler={payHandler}
+              tokenAddress={tokenAddress}
+              tokenName={tokenName}
+              userName={userName as string}
             />
           )}
         </section>
