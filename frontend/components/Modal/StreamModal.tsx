@@ -1,19 +1,19 @@
 import Image from "next/image";
 import React, { useState, FormEvent } from "react";
-// import Backdrop from "../UI/Backdrop";
+import Backdrop from "../UI/Backdrop";
 
-type Prop = {
-  onClose: () => {};
-};
+// type Prop = {
+//   onClose: () => {};
+// };
 
-const Backdrop = ({ onClose }: Prop) => {
-  return (
-    <div
-      onClick={onClose}
-      className="fixed top-0 left-0 z-50 h-screen w-screen bg-black/75 backdrop-blur-[5px]"
-    ></div>
-  );
-};
+// const Backdrop = ({ onClose }: Prop) => {
+//   return (
+//     <div
+//       onClick={onClose}
+//       className="fixed top-0 left-0 z-50 h-screen w-screen bg-black/75 backdrop-blur-[5px]"
+//     ></div>
+//   );
+// };
 
 const StreamModal = ({ onClose }: any) => {
   const [address, setAddress] = useState("");
