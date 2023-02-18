@@ -21,6 +21,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { useStyleRegistry } from "styled-jsx";
 import StreamModal from "@/components/Modal/StreamModal";
+import PaymentModal from "@/components/Modal/PaymentModal";
 
 interface IUser {
   name: string;
@@ -36,6 +37,7 @@ const Pay = () => {
   const [tokenDetails, setTokenDetails] = useState<any>(null);
   const [signer, setSigner] = useState<any>();
   const [showStreamModal, setShowStreamModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const router = useRouter();
   const userName = "dineshaitham";
@@ -97,7 +99,7 @@ const Pay = () => {
   };
 
   const requestHandler = () => {
-    console.log("Request popup");
+    setShowPaymentModal(true);
   };
 
   const streamHandler = () => {
@@ -247,6 +249,13 @@ const Pay = () => {
               })}
           </div>
           {showStreamModal && <StreamModal onClose={closeStreamHandler} />}
+          {showPaymentModal && (
+            <PaymentModal
+              onClose={() => {
+                setShowPaymentModal(false);
+              }}
+            />
+          )}
         </section>
       )}
     </div>

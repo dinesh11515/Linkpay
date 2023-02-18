@@ -6,6 +6,7 @@ const register = () => {
   const [username, setUsername] = useState("");
   const [twitter, setTwitter] = useState("");
   const [bio, setBio] = useState("");
+  const [image, setImage] = useState("");
 
   const registerHandler = (event: FormEvent) => {
     event.preventDefault();
@@ -42,7 +43,7 @@ const register = () => {
           className="w-full flex-[0.57] bg-[url('/formbg.svg')]"
         >
           <div className="p-10">
-            <h2 className="font-light font-Poppins text-3xl tracking-wider mb-6 py-10">
+            <h2 className="font-light font-Poppins text-3xl tracking-wider mb-6 ">
               Linkpay, Fast & Secure <br /> payment
             </h2>
 
@@ -55,6 +56,23 @@ const register = () => {
                   setName(e.target.value);
                 }}
                 placeholder="Sanskar Khandelwal"
+                className="p-2 border border-gray-400 focus:outline-none rounded-md bg-[#F8F8F8] mb-4"
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm font-semibold mb-1">
+                Profile Image
+              </label>
+              <input
+                required
+                type="file"
+                onChange={(e: any) => {
+                  let selectedFile = e.target.files[0];
+                  if (selectedFile) {
+                    setImage(selectedFile);
+                  }
+                }}
                 className="p-2 border border-gray-400 focus:outline-none rounded-md bg-[#F8F8F8] mb-4"
               />
             </div>
