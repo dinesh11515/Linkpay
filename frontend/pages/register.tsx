@@ -12,6 +12,7 @@ import { Auth, useAuth } from "@arcana/auth-react";
 import { ethers, Signer } from "ethers";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ShareModal from "@/components/Modal/ShareModal";
 
 const register = () => {
   const [name, setName] = useState("");
@@ -20,6 +21,7 @@ const register = () => {
   const [bio, setBio] = useState("");
   const [image, setImage] = useState("");
   const [chain, setChain] = useState("mantle");
+  const [showModal, setShowModal] = useState(false);
 
   const acceptableTokens = [
     {
@@ -120,6 +122,7 @@ const register = () => {
         );
         await tx.wait();
         toast.success("Registered Successfully");
+        setShowModal(true);
       } else {
         toast.error("Please input the proper details! ");
       }
@@ -322,6 +325,13 @@ const register = () => {
             </form>
           </div>
         </div>
+        {showModal && (
+          <ShareModal
+          // onClose={() => {
+          //   setShowModal(false);
+          // }}
+          />
+        )}
       </div>
       <ToastContainer />
     </section>

@@ -1,3 +1,4 @@
+import ShareModal from "@/components/Modal/ShareModal";
 import About from "@/components/UI/About";
 import Hero from "@/components/UI/Hero";
 import Navbar from "@/components/UI/Navbar";
@@ -9,6 +10,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <About />
+      {/* <ShareModal /> */}
     </div>
   );
 }
