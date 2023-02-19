@@ -1,3 +1,6 @@
+import About from "@/components/UI/About";
+import Hero from "@/components/UI/Hero";
+import Navbar from "@/components/UI/Navbar";
 import { Auth, useAuth } from "@arcana/auth-react";
 import Pay from "./pay";
 
@@ -15,8 +18,10 @@ export default function Home() {
     }
   };
   return (
-    <div>
-      <Pay />
+    <div className="w-[95%] mx-auto py-4">
+      <Navbar />
+      <Hero />
+      <About />
     </div>
   );
 }

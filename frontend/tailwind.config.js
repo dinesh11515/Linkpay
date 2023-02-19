@@ -13,6 +13,7 @@ module.exports = {
       fontFamily: {
         Grotesk: ["Space Grotesk", "sans-serif"],
         Poppins: ["Poppins", "sans-serif"],
+        Pragati: ["Pragati Narrow", "sans-serif"],
       },
     },
   },
