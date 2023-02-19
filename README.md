@@ -2,6 +2,10 @@
 ![logo](https://user-images.githubusercontent.com/93245109/219965470-904f6b9f-da3e-4b2a-b98b-6a3c0ae3c95b.png)
 
 
+[live here](https://linkpay.vercel.app)
+[example link page](https://linkpay.vercel.app/pay?userName=dinesh123&chain=mumbai)
+
+
 Sending and receiving payments in the world of cryptocurrency can be a challenging task, particularly for businesses, freelancers, creators, and DAOs. Unlike traditional payment methods, there is no intermediary to ensure that payments are transferred securely and accurately. Instead, parties must send over their wallet addresses to another party and check manually whether they have received payment or not.
 
 This process can be time-consuming and inefficient, particularly for businesses that receive a high volume of payments. It can also be difficult to keep track of payments since they are not tied to any particular invoice, making tracking transactions and accounting a daunting task.
