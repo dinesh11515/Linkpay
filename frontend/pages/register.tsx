@@ -19,7 +19,7 @@ const register = () => {
   const [twitter, setTwitter] = useState("");
   const [bio, setBio] = useState("");
   const [image, setImage] = useState("");
-  const [chain, setChain] = useState("mumbai");
+  const [chain, setChain] = useState("mantle");
 
   const acceptableTokens = [
     {
@@ -39,10 +39,32 @@ const register = () => {
     try {
       await auth.connect();
       console.log(provider, "provider");
-      await provider.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: "80001" }],
-      });
+      if (chain === "mumbai") {
+        await provider.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "80001" }],
+        });
+      } else {
+        await provider.request({
+          method: "wallet_addEthereumChain",
+          params: [
+            {
+              chainId: "5001",
+              chainName: "Mantle Testnet",
+              rpcUrls: ["https://rpc.testnet.mantle.xyz"],
+              nativeCurrency: {
+                name: "BIT",
+                symbol: "BIT", // 2-6 characters long
+                decimals: 18,
+              },
+            },
+          ],
+        });
+        await provider.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "5001" }],
+        });
+      }
     } catch (e) {
       console.log(e, "onLogin");
     }
