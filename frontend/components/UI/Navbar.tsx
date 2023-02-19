@@ -16,14 +16,14 @@ const Navbar = () => {
         >
           Home
         </p>
-        <p
+        {/* <p
           onClick={() => {
             router.push("/dashboard");
           }}
           className="cursor-pointer"
         >
           Dashboard
-        </p>
+        </p> */}
       </div>
     </nav>
   );

@@ -9,6 +9,7 @@ export async function createNewFlow(
   const chainId = await provider
     .getNetwork()
     .then((network: any) => network.chainId);
+  console.log(chainId);
 
   const sf = await Framework.create({
     chainId: Number(chainId),
