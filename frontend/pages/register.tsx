@@ -1,5 +1,17 @@
 import Image from "next/image";
 import React, { FormEvent, useState } from "react";
+import {
+  contractABI,
+  mantleAddress,
+  mumbaiAddress,
+  mantleRPC,
+  mumbaiRPC,
+  erc20abi,
+} from "@/constants";
+import { Auth, useAuth } from "@arcana/auth-react";
+import { ethers, Signer } from "ethers";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const register = () => {
   const [name, setName] = useState("");
@@ -7,9 +19,85 @@ const register = () => {
   const [twitter, setTwitter] = useState("");
   const [bio, setBio] = useState("");
   const [image, setImage] = useState("");
+  const [chain, setChain] = useState("mumbai");
 
-  const registerHandler = (event: FormEvent) => {
-    event.preventDefault();
+  const acceptableTokens = [
+    {
+      tokenName: "USDC",
+      tokenAddress: "0xeA7a60bC7E14908b69489394dfc322F7E9d16918",
+    },
+    {
+      tokenName: "DAI",
+      tokenAddress: "0xb973D2876c4F161439AD05f1dAe184dbD594e04E",
+    },
+  ];
+
+  const auth = useAuth();
+  const provider = auth.provider;
+  const onLogin = async () => {
+    const provider = auth.provider;
+    try {
+      await auth.connect();
+      console.log(provider, "provider");
+      await provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "80001" }],
+      });
+    } catch (e) {
+      console.log(e, "onLogin");
+    }
+  };
+
+  const userNameHandler = async (event: any) => {
+    try {
+      const web3Provider = new ethers.providers.JsonRpcProvider(
+        chain === "mumbai" ? mumbaiRPC : mantleRPC
+      );
+      const contract = new ethers.Contract(
+        chain === "mumbai" ? mumbaiAddress : mantleAddress,
+        contractABI,
+        web3Provider
+      );
+
+      const user = await contract.users(event.target.value);
+      console.log(user, "user");
+      if (user.name == "") {
+        setUsername(event.target.value);
+      } else {
+        toast.error("Username already taken", {
+          autoClose: 500000000,
+          hideProgressBar: true,
+        });
+      }
+    } catch (err) {
+      console.log(err, "username error");
+    }
+  };
+  const register = async () => {
+    try {
+      console.log("registering");
+      const web3Provider = new ethers.providers.Web3Provider(provider);
+      const signer = await web3Provider.getSigner();
+
+      const contract = new ethers.Contract(
+        chain === "mumbai" ? mumbaiAddress : mantleAddress,
+        contractABI,
+        signer
+      );
+
+      const tx = await contract.generateLink(
+        username,
+        image,
+        name,
+        bio,
+        twitter,
+        acceptableTokens
+      );
+      await tx.wait();
+      toast.success("Registered Successfully");
+    } catch (err) {
+      console.log(err, "register error");
+    }
   };
 
   return (
@@ -38,10 +126,7 @@ const register = () => {
             />
           </div>
         </div>
-        <form
-          onSubmit={registerHandler}
-          className="w-full flex-[0.57] bg-[url('/formbg.svg')]"
-        >
+        <div className="w-full flex-[0.57] bg-[url('/formbg.svg')]">
           <div className="p-10">
             <h2 className="font-light font-Poppins text-3xl tracking-wider mb-6 ">
               Linkpay, Fast & Secure <br /> payment
@@ -66,13 +151,11 @@ const register = () => {
               </label>
               <input
                 required
-                type="file"
+                type="text"
                 onChange={(e: any) => {
-                  let selectedFile = e.target.files[0];
-                  if (selectedFile) {
-                    setImage(selectedFile);
-                  }
+                  setImage(e.target.value);
                 }}
+                placeholder="Profile image url"
                 className="p-2 border border-gray-400 focus:outline-none rounded-md bg-[#F8F8F8] mb-4"
               />
             </div>
@@ -88,7 +171,7 @@ const register = () => {
                   required
                   type="text"
                   onChange={(e) => {
-                    setUsername(e.target.value);
+                    userNameHandler(e);
                   }}
                   placeholder="sanskar1234"
                   className="p-2  w-full rounded-md bg-[#F8F8F8] outline-none focus:outline-none"
@@ -138,15 +221,25 @@ const register = () => {
               </label>
             </div>
 
-            <button
-              className="bg-[#B3DDEB] uppercase font-semibold tracking-wide py-3 text-[#35484F] border border-[#35484F] rounded-md w-full"
-              type="submit"
-            >
-              Create Account
-            </button>
+            {auth.isLoggedIn ? (
+              <button
+                className="bg-[#B3DDEB] uppercase font-semibold tracking-wide py-3 text-[#35484F] border border-[#35484F] rounded-md w-full"
+                onClick={register}
+              >
+                Create Account
+              </button>
+            ) : (
+              <button
+                className="bg-[#B3DDEB] uppercase font-semibold tracking-wide py-3 text-[#35484F] border border-[#35484F] rounded-md w-full"
+                onClick={onLogin}
+              >
+                Connect Wallet
+              </button>
+            )}
           </div>
-        </form>
+        </div>
       </div>
+      <ToastContainer />
     </section>
   );
 };

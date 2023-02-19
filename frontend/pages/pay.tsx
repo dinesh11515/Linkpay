@@ -9,6 +9,8 @@ import dai from "../public/dai.png";
 import matic from "../public/matic.png";
 import Button from "@/components/UI/Button";
 import { ethers, Signer } from "ethers";
+import { sendNotification } from "@/Push";
+
 import {
   contractABI,
   mantleAddress,
@@ -22,6 +24,7 @@ import { useRouter } from "next/router";
 import { useStyleRegistry } from "styled-jsx";
 import StreamModal from "@/components/Modal/StreamModal";
 import PaymentModal from "@/components/Modal/PaymentModal";
+import RequestModal from "@/components/Modal/RequestModal";
 
 interface IUser {
   name: string;
@@ -36,12 +39,15 @@ const Pay = () => {
   const [user, setUser] = useState<IUser>();
   const [tokenDetails, setTokenDetails] = useState<any>(null);
   const [signer, setSigner] = useState<any>();
+  const [provider, setProvider] = useState<any>();
   const [showStreamModal, setShowStreamModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showRequestModal, setShowRequestModal] = useState(false);
   const [tokenAddress, setTokenAddress] = useState("");
   const [tokenName, setTokenName] = useState("");
+  const [account, setAccount] = useState("");
 
-  console.log(tokenAddress, tokenName);
+  console.log(user);
 
   const router = useRouter();
   const userName = "dineshaitham";
@@ -52,6 +58,7 @@ const Pay = () => {
       const provider = new ethers.providers.Web3Provider(
         (window as any).ethereum
       );
+      setProvider(provider);
 
       // MetaMask requires requesting permission to connect users accounts
       await provider.send("eth_requestAccounts", []);
@@ -61,6 +68,7 @@ const Pay = () => {
       // For this, you need the account signer...
       const signer = provider.getSigner();
       setSigner(signer);
+      setAccount(await signer.getAddress());
     } catch (err) {
       console.log(err, "connect Wallet");
     }
@@ -105,12 +113,14 @@ const Pay = () => {
         tokenName
       );
       await tx.wait();
+
+      await sendNotification(amount, await signer.getAddress());
     } catch (err) {
       console.log(err);
     }
   };
   const scheduleHandler = () => {
-    console.log("Schedule popup");
+    setShowRequestModal(true);
   };
 
   const requestHandler = (address: string, name: string) => {
@@ -200,7 +210,7 @@ const Pay = () => {
                       </p>
                     </button>
                     <button
-                      onClick={requestingHandler}
+                      onClick={scheduleHandler}
                       className="border border-black  rounded-xl px-6 py-2 hover:border-[#1B0B22] hover:text-[#1B0B22] hover:bg-black/10"
                     >
                       <p className="flex gap-2 items-center  font-semibold">
@@ -268,7 +278,13 @@ const Pay = () => {
                 );
               })}
           </div>
-          {showStreamModal && <StreamModal onClose={closeStreamHandler} />}
+          {showStreamModal && (
+            <StreamModal
+              onClose={closeStreamHandler}
+              provider={provider}
+              address={user?.userAddress}
+            />
+          )}
           {showPaymentModal && (
             <PaymentModal
               onClose={() => {
@@ -278,6 +294,15 @@ const Pay = () => {
               tokenAddress={tokenAddress}
               tokenName={tokenName}
               userName={userName as string}
+            />
+          )}
+          {showRequestModal && (
+            <RequestModal
+              onClose={() => {
+                setShowRequestModal(false);
+              }}
+              account={account}
+              receiver={user?.userAddress}
             />
           )}
         </section>

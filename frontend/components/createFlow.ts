@@ -19,7 +19,7 @@ export async function createNewFlow(
 
   const superSigner = sf.createSigner({ signer: signer });
 
-  const token = await sf.loadSuperToken(tokenName);
+  const token = await sf.loadSuperToken("f" + tokenName);
 
   console.log(token);
 
@@ -49,7 +49,7 @@ export async function createNewFlow(
   }
 }
 
-function calculateFlowRate(amount: number) {
+export function calculateFlowRate(amount: number) {
   if (typeof Number(amount) !== "number" || isNaN(Number(amount)) === true) {
     alert("You can only calculate a flowRate based on a number");
     return;
@@ -57,7 +57,7 @@ function calculateFlowRate(amount: number) {
     if (Number(amount) === 0) {
       return 0;
     }
-    const amountInWei = ethers.BigNumber.from(amount);
+    const amountInWei = ethers.BigNumber.from(amount + "");
     const monthlyAmount: any = ethers.utils.formatEther(amountInWei.toString());
     const calculatedFlowRate = monthlyAmount * 3600 * 24 * 30;
     return calculatedFlowRate;

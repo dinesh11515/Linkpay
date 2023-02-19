@@ -1,11 +1,11 @@
 import * as PushAPI from "@pushprotocol/restapi";
 import * as ethers from "ethers";
 
-const PK = "e0d15250dd64940b03b85c65baa1d53af003f3003530d71e97be8a4752e0daba"; // channel private key
+const PK = process.env.NEXT_PUBLIC_PK; // channel private key
 const Pkey = `0x${PK}`;
 const signer = new ethers.Wallet(Pkey);
 
-const sendNotification = async () => {
+export const sendNotification = async (amount: string, address: string) => {
   try {
     const apiResponse = await PushAPI.payloads.sendNotification({
       signer,
@@ -13,11 +13,17 @@ const sendNotification = async () => {
       identityType: 2, // direct payload
       notification: {
         title: `Payment Received!`,
-        body: `You have received a payment of 0.1 ETH from 0x1234...`,
+        body: `You have received a payment of ${amount} ETH from ${address.slice(
+          0,
+          6
+        )}...${address.slice(-4)}`,
       },
       payload: {
         title: `Payment Received!`,
-        body: `You have received a payment of 0.1 ETH from 0x1234...`,
+        body: `You have received a payment of ${amount} ETH from ${address.slice(
+          0,
+          6
+        )}...${address.slice(-4)}`,
         cta: "",
         img: "",
       },
@@ -33,4 +39,28 @@ const sendNotification = async () => {
   }
 };
 
-sendNotification();
+export const sendMsg = async (
+  address: string,
+  receiver: string,
+  amount: string
+) => {
+  try {
+    const user = await PushAPI.user.get({
+      account: address,
+      env: "staging",
+    });
+    console.log("User: ", user);
+    const response = await PushAPI.chat.send({
+      messageContent: `Hi I am requesting a payment of ${amount} Here is my link`,
+      messageType: "Text",
+      receiverAddress: receiver, // receiver's address or chatId of a group
+      account: address,
+      pgpPrivateKey: "",
+      apiKey:
+        "tAWEnggQ9Z.UaDBNjrvlJZx3giBTIQDcT8bKQo1O1518uF1Tea7rPwfzXv2ouV5rX9ViwgJUrXm",
+      env: "staging",
+    });
+  } catch (err) {
+    console.error("Send Msg Error: ", err);
+  }
+};

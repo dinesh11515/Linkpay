@@ -1,7 +1,8 @@
 import Image from "next/image";
 import React, { useState, FormEvent } from "react";
 import Backdrop from "../UI/Backdrop";
-
+import { calculateFlowRate } from "../createFlow";
+import { createNewFlow } from "../createFlow";
 // type Prop = {
 //   onClose: () => {};
 // };
@@ -15,11 +16,9 @@ import Backdrop from "../UI/Backdrop";
 //   );
 // };
 
-const StreamModal = ({ onClose }: any) => {
-  const [address, setAddress] = useState("");
+const StreamModal = ({ onClose, address, provider }: any) => {
   const [flowRate, setFlowRate] = useState("");
-  const [amount, setAmount] = useState("");
-  const [token, setToken] = useState("usdc");
+  const [token, setToken] = useState("USDCx");
 
   const tokenChangeHandler = (event: any) => {
     setToken(event.target.value);
@@ -27,6 +26,7 @@ const StreamModal = ({ onClose }: any) => {
 
   const streamHandler = (event: FormEvent) => {
     event.preventDefault();
+    createNewFlow(address, flowRate, provider, token);
   };
 
   return (
@@ -40,17 +40,7 @@ const StreamModal = ({ onClose }: any) => {
             placeholder="flow-rate in wei/second"
             className="border border-purple-200 rounded-md p-2 w-full"
             onChange={(e) => {
-              setAddress(e.target.value);
-            }}
-          />
-
-          <label className="text-sm font-semibold mb-1 mt-4">Address</label>
-          <input
-            required
-            placeholder="reciepent address"
-            className="border border-purple-200 rounded-md p-2 w-full"
-            onChange={(e) => {
-              setAddress(e.target.value);
+              setFlowRate(e.target.value);
             }}
           />
 
@@ -66,14 +56,14 @@ const StreamModal = ({ onClose }: any) => {
                     className="rounded-full"
                   />
                 </span>
-                USDC
+                USDCx
               </p>
               <input
                 type="radio"
                 name="token"
-                value="usdc"
+                value="USDCx"
                 onChange={tokenChangeHandler}
-                checked={token === "usdc"}
+                checked={token === "USDCx"}
               />
             </label>
             <label className="flex flex-row-reverse gap-3  border py-2 px-5 rounded-md cursor-pointer">
@@ -87,28 +77,23 @@ const StreamModal = ({ onClose }: any) => {
                     className="rounded-full"
                   />
                 </span>
-                DAI
+                DAIx
               </p>
               <input
                 type="radio"
                 name="token"
-                value="dai"
-                checked={token === "dai"}
+                value="DAIx"
+                checked={token === "DAIx"}
                 onChange={tokenChangeHandler}
               />
             </label>
           </div>
 
-          <label className="text-sm font-semibold mb-1">Amount</label>
-          <input
-            required
-            type="number"
-            placeholder="amount"
-            className="border border-purple-200 rounded-md p-2 w-full"
-            onChange={(e) => {
-              setAmount(e.target.value);
-            }}
-          />
+          <label className="text-sm font-semibold mb-1">
+            Your Flow will be{" "}
+            {calculateFlowRate(Number(flowRate))?.toPrecision(4)} {token} per
+            month{" "}
+          </label>
 
           <button
             type="submit"
