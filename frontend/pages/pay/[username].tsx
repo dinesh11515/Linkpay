@@ -25,6 +25,7 @@ import { useStyleRegistry } from "styled-jsx";
 import StreamModal from "@/components/Modal/StreamModal";
 import PaymentModal from "@/components/Modal/PaymentModal";
 import RequestModal from "@/components/Modal/RequestModal";
+import WalletModal from "@/components/Modal/ConnectWalletModal";
 
 interface IUser {
   name: string;
@@ -52,6 +53,9 @@ const Pay = () => {
   const router = useRouter();
   const userName = "dineshaitham";
   const chain = "mumbai";
+
+  // const userName = router.query.username;
+  // console.log(userName);
 
   const connectWallet = async () => {
     try {
@@ -120,7 +124,7 @@ const Pay = () => {
     }
   };
   const scheduleHandler = () => {
-    setShowRequestModal(true);
+    // setShowRequestModal(true);
   };
 
   const requestHandler = (address: string, name: string) => {
@@ -173,7 +177,6 @@ const Pay = () => {
         <p>Loading...</p>
       ) : (
         <section>
-          <button onClick={connectWallet}>Connect Wallet</button>
           <header className="relative  h-[45vh] ">
             <Image src="/head.png" alt="header img" fill />
             {/* <div className="w-full h-full bg-gradient-to-r from-[#000000] via-[#1B0B22] to-[#1C1A28] " /> */}
@@ -181,13 +184,29 @@ const Pay = () => {
           <div className="w-[80%] max-w-[1200px] mx-auto ">
             <div className="flex">
               <div className="relative w-[180px]">
-                <img
+                {user?.image === null ? (
+                  <Image
+                    src="/pfp.png"
+                    alt="user"
+                    width={180}
+                    className="rounded-full absolute -top-10 bg-white/50 p-2"
+                  />
+                ) : (
+                  <img
+                    src={user?.image}
+                    width={180}
+                    height={100}
+                    className="rounded-full absolute -top-10 bg-white/50 p-2"
+                    alt="profile-pic"
+                  />
+                )}
+                {/* <img
                   src={user?.image}
                   width={180}
                   height={100}
                   className="rounded-full absolute -top-10 bg-white/50 p-2"
                   alt="profile-pic"
-                />
+                /> */}
               </div>
               <div className="w-full p-4">
                 <div className="flex items-center justify-between w-full">
@@ -252,31 +271,31 @@ const Pay = () => {
               Initiate Payment
             </p>
 
-            <div className="flex gap-20"></div>
-
-            {tokenDetails?.length > 0 &&
-              tokenDetails.map((token: any) => {
-                const img = "/" + token.tokenName + ".png";
-                return (
-                  <button
-                    onClick={() =>
-                      requestHandler(token.tokenAddress, token.tokenName)
-                    }
-                    className={`rounded-xl w-[220px] pl-5 py-3 items-center bg-blue-100 flex gap-2 hover:bg-blue-200`}
-                  >
-                    <Image
-                      src={img}
-                      alt={token.tokenName}
-                      width={30}
-                      height={30}
-                      className="rounded-full"
-                    />
-                    <p className={`font-semibold text-blue-600 text-lg`}>
-                      Pay with {token.tokenName}
-                    </p>
-                  </button>
-                );
-              })}
+            <div className="flex gap-20">
+              {tokenDetails?.length > 0 &&
+                tokenDetails.map((token: any) => {
+                  const img = "/" + token.tokenName + ".png";
+                  return (
+                    <button
+                      onClick={() =>
+                        requestHandler(token.tokenAddress, token.tokenName)
+                      }
+                      className={`rounded-xl w-[220px] pl-5 py-3 items-center bg-blue-100 flex gap-2 hover:bg-blue-200`}
+                    >
+                      <Image
+                        src={img}
+                        alt={token.tokenName}
+                        width={30}
+                        height={30}
+                        className="rounded-full"
+                      />
+                      <p className={`font-semibold text-blue-600 text-lg`}>
+                        Pay with {token.tokenName}
+                      </p>
+                    </button>
+                  );
+                })}
+            </div>
           </div>
           {showStreamModal && (
             <StreamModal
@@ -307,6 +326,8 @@ const Pay = () => {
           )}
         </section>
       )}
+
+      {!account && <WalletModal connectWallet={connectWallet} />}
     </div>
   );
 };

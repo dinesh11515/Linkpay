@@ -95,28 +95,34 @@ const register = () => {
       console.log(err, "username error");
     }
   };
-  const register = async () => {
+  const register = async (e: any) => {
+    e.preventDefault();
+
     try {
-      console.log("registering");
-      const web3Provider = new ethers.providers.Web3Provider(provider);
-      const signer = await web3Provider.getSigner();
+      if (name && username && twitter && bio && image && chain) {
+        console.log("registering");
+        const web3Provider = new ethers.providers.Web3Provider(provider);
+        const signer = await web3Provider.getSigner();
 
-      const contract = new ethers.Contract(
-        chain === "mumbai" ? mumbaiAddress : mantleAddress,
-        contractABI,
-        signer
-      );
+        const contract = new ethers.Contract(
+          chain === "mumbai" ? mumbaiAddress : mantleAddress,
+          contractABI,
+          signer
+        );
 
-      const tx = await contract.generateLink(
-        username,
-        image,
-        name,
-        bio,
-        twitter,
-        acceptableTokens
-      );
-      await tx.wait();
-      toast.success("Registered Successfully");
+        const tx = await contract.generateLink(
+          username,
+          image,
+          name,
+          bio,
+          twitter,
+          acceptableTokens
+        );
+        await tx.wait();
+        toast.success("Registered Successfully");
+      } else {
+        toast.error("Please input the proper details! ");
+      }
     } catch (err) {
       console.log(err, "register error");
     }
@@ -154,110 +160,166 @@ const register = () => {
               Linkpay, Fast & Secure <br /> payment
             </h2>
 
-            <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-1">Name</label>
-              <input
-                required
-                type="text"
-                onChange={(e) => {
-                  setName(e.target.value);
-                }}
-                placeholder="Sanskar Khandelwal"
-                className="p-2 border border-gray-400 focus:outline-none rounded-md bg-[#F8F8F8] mb-4"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-1">
-                Profile Image
-              </label>
-              <input
-                required
-                type="text"
-                onChange={(e: any) => {
-                  setImage(e.target.value);
-                }}
-                placeholder="Profile image url"
-                className="p-2 border border-gray-400 focus:outline-none rounded-md bg-[#F8F8F8] mb-4"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-1">Username</label>
-
-              <label className="bg-[#F8F8F8] px-2 gap-1 rounded-md border border-gray-400 focus:outline-none flex items-center mb-4">
-                <span>
-                  <Image src="/name.svg" alt="" width={20} height={20} />
-                </span>
+            <form>
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold mb-1">Name</label>
                 <input
                   required
                   type="text"
                   onChange={(e) => {
-                    userNameHandler(e);
+                    setName(e.target.value);
                   }}
-                  placeholder="sanskar1234"
-                  className="p-2  w-full rounded-md bg-[#F8F8F8] outline-none focus:outline-none"
+                  placeholder="Sanskar Khandelwal"
+                  className="p-2 border border-gray-400 focus:outline-none rounded-md bg-[#F8F8F8] mb-4"
                 />
-              </label>
-            </div>
+              </div>
 
-            <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-1">Twitter</label>
-
-              <label className="bg-[#F8F8F8] px-2 gap-1 rounded-md border border-gray-400 focus:outline-none flex items-center mb-4">
-                <span>
-                  <Image src="/twitter.svg" alt="" width={20} height={20} />
-                </span>
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold mb-1">
+                  Profile Image
+                </label>
                 <input
                   required
-                  onChange={(e) => {
-                    setTwitter(e.target.value);
-                  }}
                   type="text"
-                  placeholder="sanskar_khandelwal"
-                  className="p-2 w-full rounded-md bg-[#F8F8F8] outline-none focus:outline-none"
+                  onChange={(e: any) => {
+                    setImage(e.target.value);
+                  }}
+                  placeholder="Profile image url"
+                  className="p-2 border border-gray-400 focus:outline-none rounded-md bg-[#F8F8F8] mb-4"
                 />
-              </label>
-            </div>
+              </div>
 
-            <div className="flex flex-col">
-              <label className="text-sm font-semibold mb-1">Bio</label>
-              <label className="bg-[#F8F8F8] px-2 gap-1 rounded-md border border-gray-400 focus:outline-none flex mb-4">
-                <span>
-                  <Image
-                    src="/bio.png"
-                    alt=""
-                    width={20}
-                    height={20}
-                    className="pt-2"
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold mb-1">Username</label>
+
+                <label className="bg-[#F8F8F8] px-2 gap-1 rounded-md border border-gray-400 focus:outline-none flex items-center mb-4">
+                  <span>
+                    <Image src="/name.svg" alt="" width={20} height={20} />
+                  </span>
+                  <input
+                    required
+                    type="text"
+                    onChange={(e) => {
+                      userNameHandler(e);
+                    }}
+                    placeholder="sanskar1234"
+                    className="p-2  w-full rounded-md bg-[#F8F8F8] outline-none focus:outline-none"
                   />
-                </span>
-                <textarea
-                  required
-                  placeholder="Software Developer"
-                  onChange={(e) => {
-                    setBio(e.target.value);
-                  }}
-                  className="p-2 w-full rounded-md bg-[#F8F8F8] outline-none focus:outline-none min-h-[120px]"
-                />
-              </label>
-            </div>
+                </label>
+              </div>
 
-            {auth.isLoggedIn ? (
-              <button
-                className="bg-[#B3DDEB] uppercase font-semibold tracking-wide py-3 text-[#35484F] border border-[#35484F] rounded-md w-full"
-                onClick={register}
-              >
-                Create Account
-              </button>
-            ) : (
-              <button
-                className="bg-[#B3DDEB] uppercase font-semibold tracking-wide py-3 text-[#35484F] border border-[#35484F] rounded-md w-full"
-                onClick={onLogin}
-              >
-                Connect Wallet
-              </button>
-            )}
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold mb-1">Twitter</label>
+
+                <label className="bg-[#F8F8F8] px-2 gap-1 rounded-md border border-gray-400 focus:outline-none flex items-center mb-4">
+                  <span>
+                    <Image src="/twitter.svg" alt="" width={20} height={20} />
+                  </span>
+                  <input
+                    required
+                    onChange={(e) => {
+                      setTwitter(e.target.value);
+                    }}
+                    type="text"
+                    placeholder="sanskar_khandelwal"
+                    className="p-2 w-full rounded-md bg-[#F8F8F8] outline-none focus:outline-none"
+                  />
+                </label>
+              </div>
+
+              <div>
+                <label className="text-sm font-semibold mb-1">Chain</label>
+
+                <div className="flex my-4 gap-4">
+                  <label className="flex flex-row-reverse gap-3 bg-[#F8F8F8]  border py-2 px-5 rounded-md cursor-pointer">
+                    <p className="flex items-center gap-1 font-semibold">
+                      <span>
+                        <Image
+                          src="/bit.png"
+                          alt="mantle"
+                          width={30}
+                          height={30}
+                          className="rounded-full"
+                        />
+                      </span>
+                      Mantle
+                    </p>
+                    <input
+                      type="radio"
+                      name="token"
+                      value="mantle"
+                      checked={chain === "mantle"}
+                      onChange={(e) => {
+                        setChain(e.target.value);
+                      }}
+                    />
+                  </label>
+                  <label className="flex flex-row-reverse gap-3 bg-[#F8F8F8]  border py-2 px-5 rounded-md cursor-pointer">
+                    <p className="flex items-center font-semibold">
+                      <span>
+                        <Image
+                          src="/matic.png"
+                          alt="Mumbai"
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                        />
+                      </span>
+                      Mumbai
+                    </p>
+                    <input
+                      type="radio"
+                      name="token"
+                      value="mumbai"
+                      checked={chain === "mumbai"}
+                      onChange={(e) => {
+                        setChain(e.target.value);
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <label className="text-sm font-semibold mb-1">Bio</label>
+                <label className="bg-[#F8F8F8] px-2 gap-1 rounded-md border border-gray-400 focus:outline-none flex mb-4">
+                  <span>
+                    <Image
+                      src="/bio.png"
+                      alt=""
+                      width={20}
+                      height={20}
+                      className="pt-2"
+                    />
+                  </span>
+                  <textarea
+                    required
+                    placeholder="Software Developer"
+                    onChange={(e) => {
+                      setBio(e.target.value);
+                    }}
+                    className="p-2 w-full rounded-md bg-[#F8F8F8] outline-none focus:outline-none min-h-[120px]"
+                  />
+                </label>
+              </div>
+
+              {auth.isLoggedIn ? (
+                <button
+                  type="submit"
+                  className="bg-[#B3DDEB] uppercase font-semibold tracking-wide py-3 text-[#35484F] border border-[#35484F] rounded-md w-full"
+                  onClick={register}
+                >
+                  Create Account
+                </button>
+              ) : (
+                <button
+                  className="bg-[#B3DDEB] uppercase font-semibold tracking-wide py-3 text-[#35484F] border border-[#35484F] rounded-md w-full"
+                  onClick={onLogin}
+                >
+                  Connect Wallet
+                </button>
+              )}
+            </form>
           </div>
         </div>
       </div>

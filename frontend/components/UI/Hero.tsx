@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React from "react";
 import { AiOutlineArrowRight } from "react-icons/ai";
@@ -9,7 +10,22 @@ const Hero = () => {
     router.push("/register");
   };
   return (
-    <section className="bg-[#13A891] rounded-[20px] w-full py-20 my-8 text-center">
+    <section className="bg-[#13A891] bg-[url('/pattern-circles.svg')] bg-no-repeat  bg-left-bottom relative rounded-[20px] w-full py-20 my-8 text-center">
+      <Image
+        src="/bg-2.svg"
+        alt="vector"
+        width={150}
+        height={50}
+        className="absolute bottom-0 right-0"
+      />
+
+      {/* <Image
+        src="/bg-vector.svg"
+        alt="vector"
+        width={700}
+        height={400}
+        className="absolute left-0 top-0"
+      /> */}
       <p className="text-[#D4D4D4] tracking-wider leading-7 font-Poppins">
         spending is easy but controlling is not!
       </p>
