@@ -25,12 +25,16 @@ const register = () => {
 
   const acceptableTokens = [
     {
-      tokenName: "USDC",
+      tokenName: "USDT",
       tokenAddress: "0xeA7a60bC7E14908b69489394dfc322F7E9d16918",
     },
     {
       tokenName: "DAI",
       tokenAddress: "0xb973D2876c4F161439AD05f1dAe184dbD594e04E",
+    },
+    {
+      tokenName: "USDC",
+      tokenAddress: "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
     },
   ];
 

@@ -2,7 +2,7 @@ import ShareModal from "@/components/Modal/ShareModal";
 import About from "@/components/UI/About";
 import Hero from "@/components/UI/Hero";
 import Navbar from "@/components/UI/Navbar";
-import Pay from "./pay/[username]";
+import Pay from "./pay";
 
 export default function Home() {
   return (

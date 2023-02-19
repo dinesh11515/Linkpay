@@ -3,6 +3,7 @@ import React, { useState, FormEvent } from "react";
 import Backdrop from "../UI/Backdrop";
 import { calculateFlowRate } from "../createFlow";
 import { createNewFlow } from "../createFlow";
+import { ethers } from "ethers";
 // type Prop = {
 //   onClose: () => {};
 // };
@@ -26,7 +27,8 @@ const StreamModal = ({ onClose, address, provider }: any) => {
 
   const streamHandler = (event: FormEvent) => {
     event.preventDefault();
-    createNewFlow(address, flowRate, provider, token);
+    const web3Provider = new ethers.providers.Web3Provider(provider);
+    createNewFlow(address, flowRate, web3Provider, token);
   };
 
   return (
