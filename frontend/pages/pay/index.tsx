@@ -45,13 +45,13 @@ const Pay = () => {
   const [tokenName, setTokenName] = useState("");
   const [account, setAccount] = useState("");
 
-  console.log(user);
-
   const router = useRouter();
   const { userName, chain } = router.query;
 
   const auth = useAuth();
+  console.log(auth, "auth");
   const provider = auth.provider;
+  console.log(provider, "provider");
   const onLogin = async () => {
     const provider = auth.provider;
     try {
@@ -82,7 +82,10 @@ const Pay = () => {
           method: "wallet_switchEthereumChain",
           params: [{ chainId: "5001" }],
         });
-        console.log(provider);
+        const web3Provider = new ethers.providers.Web3Provider(provider);
+        const signer = web3Provider.getSigner();
+        const address = await signer.getAddress();
+        setAccount(address);
       }
     } catch (e) {
       console.log(e, "onLogin");
@@ -150,7 +153,7 @@ const Pay = () => {
     setTokenName(name);
   };
   const requestingHandler = () => {
-    setShowPaymentModal(true);
+    setShowRequestModal(true);
   };
 
   const streamHandler = () => {
@@ -246,7 +249,7 @@ const Pay = () => {
                       </p>
                     </button>
                     <button
-                      onClick={scheduleHandler}
+                      onClick={requestingHandler}
                       className="border border-black  rounded-xl px-6 py-2 hover:border-[#1B0B22] hover:text-[#1B0B22] hover:bg-black/10"
                     >
                       <p className="flex gap-2 items-center  font-semibold">
