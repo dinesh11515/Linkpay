@@ -3,13 +3,11 @@ import React, { useEffect } from "react";
 import { HiCheckBadge } from "react-icons/hi2";
 import { BsGithub, BsTwitter, BsCalendarCheck, BsUpload } from "react-icons/bs";
 import { CiStreamOn } from "react-icons/ci";
-import usdc from "../public/usdc.png";
-import usdt from "../public/t.png";
-import dai from "../public/dai.png";
-import matic from "../public/matic.png";
-import Button from "@/components/UI/Button";
 import { ethers, Signer } from "ethers";
 import { sendNotification } from "@/Push";
+import { useAuth } from "@arcana/auth-react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import {
   contractABI,
@@ -39,8 +37,7 @@ const Pay = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<IUser>();
   const [tokenDetails, setTokenDetails] = useState<any>(null);
-  const [signer, setSigner] = useState<any>();
-  const [provider, setProvider] = useState<any>();
+
   const [showStreamModal, setShowStreamModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
@@ -51,30 +48,44 @@ const Pay = () => {
   console.log(user);
 
   const router = useRouter();
-  const userName = "dineshaitham";
-  const chain = "mumbai";
+  const { userName, chain } = router.query;
 
-  // const userName = router.query.username;
-  // console.log(userName);
-
-  const connectWallet = async () => {
+  const auth = useAuth();
+  const provider = auth.provider;
+  const onLogin = async () => {
+    const provider = auth.provider;
     try {
-      const provider = new ethers.providers.Web3Provider(
-        (window as any).ethereum
-      );
-      setProvider(provider);
-
-      // MetaMask requires requesting permission to connect users accounts
-      await provider.send("eth_requestAccounts", []);
-
-      // The MetaMask plugin also allows signing transactions to
-      // send ether and pay to change state within the blockchain.
-      // For this, you need the account signer...
-      const signer = provider.getSigner();
-      setSigner(signer);
-      setAccount(await signer.getAddress());
-    } catch (err) {
-      console.log(err, "connect Wallet");
+      await auth.connect();
+      console.log(provider, "provider");
+      if (chain === "mumbai") {
+        await provider.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "80001" }],
+        });
+      } else {
+        await provider.request({
+          method: "wallet_addEthereumChain",
+          params: [
+            {
+              chainId: "5001",
+              chainName: "Mantle Testnet",
+              rpcUrls: ["https://rpc.testnet.mantle.xyz"],
+              nativeCurrency: {
+                name: "BIT",
+                symbol: "BIT", // 2-6 characters long
+                decimals: 18,
+              },
+            },
+          ],
+        });
+        await provider.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "5001" }],
+        });
+        console.log(provider);
+      }
+    } catch (e) {
+      console.log(e, "onLogin");
     }
   };
 
@@ -84,6 +95,10 @@ const Pay = () => {
     amount: string
   ) => {
     try {
+      const provider = auth.provider;
+      const web3Provider = new ethers.providers.Web3Provider(provider);
+      const signer = web3Provider.getSigner();
+
       const erc20Contract = new ethers.Contract(tokenAddress, erc20abi, signer);
       console.log(erc20Contract);
 
@@ -119,6 +134,8 @@ const Pay = () => {
       await tx.wait();
 
       await sendNotification(amount, await signer.getAddress());
+      toast.success("Payment Successful");
+      setShowPaymentModal(false);
     } catch (err) {
       console.log(err);
     }
@@ -167,14 +184,14 @@ const Pay = () => {
 
   useEffect(() => {
     getDetails(userName as string);
-  }, []);
+  }, [userName]);
 
   console.log(tokenDetails);
 
   return (
     <div>
       {loading ? (
-        <p>Loading...</p>
+        <p></p>
       ) : (
         <section>
           <header className="relative  h-[45vh] ">
@@ -327,7 +344,8 @@ const Pay = () => {
         </section>
       )}
 
-      {!account && <WalletModal connectWallet={connectWallet} />}
+      {!auth.isLoggedIn && <WalletModal connectWallet={onLogin} />}
+      <ToastContainer />
     </div>
   );
 };
