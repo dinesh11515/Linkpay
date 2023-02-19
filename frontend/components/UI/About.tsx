@@ -6,15 +6,21 @@ const About = () => {
     <>
       <section className="flex justify-between px-10 my-28 ">
         <div className="flex flex-col gap-10 py-8">
-          <h2 className="text-6xl font-semibold font-Pragati leading-[70px] ">
-            Pay with multiple currency, <br /> link your meta{" "}
-            <span>wallet.</span>
+          <h2 className="text-6xl font-semibold font-Pragati leading-[70px] relative">
+            Recieve Crypto from, <br /> anyone with our{" "}
+            <span className="">LinkPay.</span>
+            <div className="absolute bottom-0 right-1 w-44 h-3 bg-green-200 rounded-sm"></div>
           </h2>
 
           <p className="font-Pragati text-lg tracking-wide w-[500px]">
-            we are a team of 4 proud bakchod, prolly not everyone is bakchod
-            aman is little serious kind off sajal is a funny at times and I am
-            too good to be hooman, I should be placed with the Gods,{" "}
+            LinkPay is your one stop gateway for recieving payments in crypto
+            with a very simple yet modern UI. Pay, Request or stream just with a
+            single click!
+          </p>
+
+          <p className="font-Pragati text-lg tracking-wide w-[500px] -mt-6">
+            <span className="font-semibold">Excited?</span> Give it a shot right
+            now and enjoy hassle free payments.
           </p>
 
           <ul className="font-Pragati tracking-wider">
